@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crop Image</title>
+    <script
+      src="https://kit.fontawesome.com/f4a2a97269.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="src/styles/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/cropperjs/dist/cropper.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="box">
+        <i class="fa-solid fa-circle-arrow-left fa-sm"></i>
+      </div>
+      <div class="box">Ganti Foto Profil</div>
+    </header>
+    <main>
+      <div id="cropContainer">
+        <img id="image" src="" alt="Crop Image" />
+        <div id="cropBox"></div>
+      </div>
+      <button type="button" onclick="cropImage()" class="crop"></button>
+    </main>
+
+    <script src="https://unpkg.com/cropperjs/dist/cropper.js"></script>
+    <script>
+      const image = document.getElementById("image");
+      const cropBox = document.getElementById("cropBox");
+      let cropper;
+
+      function cropImage() {
+        const croppedCanvas = cropper.getCroppedCanvas();
+        const croppedImage = croppedCanvas.toDataURL();
+
+        window.opener.postMessage(croppedImage, window.location.origin);
+        window.close();
+      }
+
+      window.addEventListener("message", function (event) {
+        const imageUrl = event.data;
+        image.src = imageUrl;
+        image.onload = function () {
+          cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 0,
+            dragMode: "move",
+            autoCropArea: 1,
+            movable: true,
+            cropBoxResizable: true,
+            cropBoxMovable: false,
+            ready: function () {
+              this.setCropBoxData({ width: 400, height: 400 });
+              this.crop();
+            },
+          });
+        };
+      });
+    </script>
+  </body>
+</html>

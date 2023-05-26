@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Change Profile Picture</title>
+    <script
+      src="https://kit.fontawesome.com/f4a2a97269.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="src/styles/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="box">
+        <i class="fa-solid fa-circle-arrow-left fa-sm"></i>
+      </div>
+      <div class="box">Ganti Foto Profil</div>
+    </header>
+    <main>
+      <div class="boxGambar" id="preview"></div>
+      <button class="kamera" onclick="captureImage()">Ambil dari Kamera</button>
+      <button class="galeri">Ambil dari Galeri</button>
+      <input type="file" id="hiddenInput" accept="image/*" />
+    </main>
+    <a href="user.html"><button class="simpan">Simpan</button></a>
+    <script>
+      function captureImage() {
+        const hiddenInput = document.getElementById("hiddenInput");
+        hiddenInput.click();
+      }
+
+      function handleFileInputChange(event) {
+        const file = event.target.files[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function () {
+          const image = new Image();
+          image.src = reader.result;
+          image.onload = function () {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.width = 400;
+            canvas.height = 400;
+            context.drawImage(image, 0, 0, 400, 400);
+            const croppedImage = canvas.toDataURL();
+
+            const cropWindow = window.open("potong.html", "_blank");
+            cropWindow.addEventListener("DOMContentLoaded", function () {
+              cropWindow.onload = function () {
+                cropWindow.postMessage(croppedImage, window.location.origin);
+              };
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+
+      window.addEventListener("message", function (event) {
+        const croppedImage = event.data;
+        const preview = document.getElementById("preview");
+        preview.innerHTML = "";
+
+        const img = new Image();
+        img.src = croppedImage;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        preview.appendChild(img);
+      });
+
+      const hiddenInput = document.getElementById("hiddenInput");
+      hiddenInput.addEventListener("change", handleFileInputChange);
+    </script>
+  </body>
+</html>

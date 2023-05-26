@@ -1,0 +1,22 @@
+#cropContainer {
+  width: 400px;
+  margin: 0 auto;
+  height: 70vh;
+}
+#preview {
+  width: 80%;
+  height: 50vh;
+}
+#cropBox {
+  overflow: hidden;
+}
+.crop {
+  height: 50px;
+  width: 50px;
+  border-radius: 100%;
+  margin: 0 auto;
+  border: none;
+  position: relative;
+  top: -50px;
+  background-color: #9e9e9e;
+}
